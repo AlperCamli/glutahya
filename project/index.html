@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vaseline Gluta-Hya | 21 Day Glow Challenge</title>
+  <!-- Bundled image resources -->
+  <meta name="ext-resource-dependency" content="uploads/sarı.webp" data-resource-id="gold" />
+  <meta name="ext-resource-dependency" content="uploads/pembe.webp" data-resource-id="pink" />
+  <meta name="ext-resource-dependency" content="uploads/mavi.webp" data-resource-id="blue" />
+  <meta name="ext-resource-dependency" content="uploads/kırmızı.webp" data-resource-id="red" />
+  <meta name="ext-resource-dependency" content="uploads/turuncu.webp" data-resource-id="orange" />
+  <!-- Bundler thumbnail -->
+  <template id="__bundler_thumbnail" data-bg-color="#f0f1f6">
+    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+      <rect width="800" height="600" fill="#f0f1f6"/>
+      <ellipse cx="200" cy="180" rx="180" ry="160" fill="oklch(78% 0.08 292 / 0.35)"/>
+      <ellipse cx="620" cy="120" rx="140" ry="130" fill="oklch(84% 0.07 162 / 0.28)"/>
+      <ellipse cx="500" cy="460" rx="160" ry="140" fill="oklch(82% 0.07 228 / 0.3)"/>
+      <ellipse cx="160" cy="440" rx="120" ry="110" fill="oklch(86% 0.06 352 / 0.22)"/>
+      <text x="400" y="285" font-family="Georgia, serif" font-size="52" font-weight="300" fill="#17181f" text-anchor="middle">21 Days to Glow</text>
+      <text x="400" y="340" font-family="Arial, sans-serif" font-size="18" fill="#8a8b9e" text-anchor="middle" letter-spacing="3">VASELINE GLUTA-HYA</text>
+      <rect x="320" y="370" width="160" height="2" rx="1" fill="#8a8b9e" opacity="0.3"/>
+    </svg>
+  </template>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #f0f1f6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+    @keyframes orbFloat1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, -40px) scale(1.08); } }
+    @keyframes orbFloat2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-25px, 35px) scale(1.05); } }
+    @keyframes orbFloat3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(20px, -20px) scale(1.1); } }
+    @keyframes bottleFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-14px); } }
+    @keyframes ringPulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-33.33%); } }
+    @keyframes expandIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Nav mobile */
+    @media (max-width: 768px) {
+      .nav-links { display: none !important; }
+    }
+
+    /* Responsive grids */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr !important; }
+      .hero-product { display: none !important; }
+      .why-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+      .signals-grid { grid-template-columns: 1fr 1fr !important; }
+      .before-after { grid-template-columns: 1fr !important; gap: 24px !important; }
+      .quotes-grid { grid-template-columns: 1fr !important; }
+      .products-grid { grid-template-columns: 1fr !important; }
+      .combo-inner { grid-template-columns: 1fr !important; }
+      .challenge-grid { grid-template-columns: 1fr !important; }
+      .howto-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+      .social-grid { grid-template-columns: 1fr 1fr !important; }
+      .ring-col { display: none !important; }
+      .badges-col { display: none !important; }
+    }
+    @media (max-width: 560px) {
+      .social-grid { grid-template-columns: 1fr !important; }
+      .signals-grid { grid-template-columns: 1fr !important; }
+      .stats-row { flex-direction: column !important; }
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f0f1f6; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="Hero.jsx"></script>
+  <script type="text/babel" src="Content.jsx"></script>
+  <script type="text/babel" src="Challenge.jsx"></script>
+  <script type="text/babel" src="App.jsx"></script>
+
+  <script>
+    // Patch responsive class names post-render
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{"simulateDay": 0}/*EDITMODE-END*/;
+    window.TWEAK_DEFAULTS = TWEAK_DEFAULTS;
+
+    // Apply responsive class patches after React renders
+    const applyResponsive = () => {
+      const pairs = [
+        ['[data-grid="hero"]', 'hero-grid'],
+        ['[data-col="hero-product"]', 'hero-product'],
+      ];
+    };
+
+    // Nav hamburger for mobile
+    document.addEventListener('DOMContentLoaded', () => {});
+  </script>
+</body>
+</html>
