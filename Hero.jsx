@@ -208,6 +208,12 @@ function HeroSection() {
               </div>
             ))}
           </div>
+
+          {/* Discover indicator — sits in flow just below the stats row */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'center' : 'flex-start', gap: '8px', marginTop: '32px', animation: 'fadeIn 1s ease 1.5s both' }}>
+            <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.muted, letterSpacing: '0.25em', textTransform: 'uppercase' }}>Discover</span>
+            <div style={{ width: '1px', height: '44px', background: `linear-gradient(to bottom, ${T.lavender}, transparent)` }}></div>
+          </div>
         </div>
 
         {/* Product visual */}
@@ -256,10 +262,6 @@ function HeroSection() {
         </div>
       </div>
 
-      <div style={{ position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', animation: 'fadeIn 1s ease 1.5s both' }}>
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.muted, letterSpacing: '0.25em', textTransform: 'uppercase' }}>Discover</span>
-        <div style={{ width: '1px', height: '44px', background: `linear-gradient(to bottom, ${T.lavender}, transparent)` }}></div>
-      </div>
     </section>
   );
 }
