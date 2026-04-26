@@ -200,11 +200,11 @@ function HeroSection() {
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: isMobile ? '24px' : '36px', marginTop: '52px', paddingTop: '36px', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
-            {[['5', 'Variants'], ['21', 'Day Ritual'], ['5', 'Days to First Results']].map(([num, label]) => (
-              <div key={label}>
-                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '36px', fontWeight: 300, color: T.text, lineHeight: 1 }}>{num}</div>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: T.muted, letterSpacing: '0.1em', marginTop: '4px' }}>{label}</div>
+          <div style={{ display: 'flex', gap: isMobile ? '0' : '36px', marginTop: '52px', paddingTop: '36px', borderTop: '1px solid rgba(0,0,0,0.07)', justifyContent: isMobile ? 'space-between' : 'flex-start' }}>
+            {[['5', 'Variants'], ['21', 'Day Ritual'], ['5', 'First Results']].map(([num, label]) => (
+              <div key={label} style={{ flex: isMobile ? 1 : 'none', textAlign: isMobile ? 'center' : 'left' }}>
+                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: isMobile ? '28px' : '36px', fontWeight: 300, color: T.text, lineHeight: 1 }}>{num}</div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: isMobile ? '10px' : '11px', color: T.muted, letterSpacing: '0.06em', marginTop: '4px' }}>{label}</div>
               </div>
             ))}
           </div>

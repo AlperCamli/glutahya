@@ -351,7 +351,7 @@ function CTASection() {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <section style={{ background: `${iridOrbs}, ${T.bg}`, padding: 'clamp(100px,12vw,160px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
+    <section id="cta-section" style={{ background: `${iridOrbs}, ${T.bg}`, padding: 'clamp(100px,12vw,160px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
       <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)`, backgroundSize: '28px 28px', pointerEvents: 'none', opacity: 0.6 }}></div>
       <div ref={ref} style={{ maxWidth: '780px', margin: '0 auto', position: 'relative', opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(40px)', transition: 'all 0.9s ease' }}>
         <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(13px,1.5vw,15px)', fontStyle: 'italic', color: T.lavender, letterSpacing: '0.04em', marginBottom: '24px' }}>21 days. 5 variants. 1 movement.</div>
