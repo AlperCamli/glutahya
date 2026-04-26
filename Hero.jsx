@@ -12,6 +12,7 @@ const T = {
   lavender: 'oklch(78% 0.08 292)',
   mint: 'oklch(84% 0.07 162)',
   blue: 'oklch(82% 0.07 228)',
+  vaselineBlue: '#005EB8',
   blush: 'oklch(86% 0.06 352)',
   peach: 'oklch(87% 0.07 58)',
   dark: '#17181f',
@@ -35,7 +36,82 @@ function useIsMobile(breakpoint = 768) {
   return isMobile;
 }
 
-Object.assign(window, { T, iridOrbs, useIsMobile });
+function getNextRaffle(now = new Date()) {
+  const target = new Date(now);
+  target.setHours(21, 0, 0, 0);
+  if (now >= target) target.setDate(target.getDate() + 1);
+
+  const diff = Math.max(0, target.getTime() - now.getTime());
+  const totalSeconds = Math.floor(diff / 1000);
+  return {
+    hours: Math.floor(totalSeconds / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
+  };
+}
+
+function useRaffleCountdown() {
+  const [countdown, setCountdown] = useState(() => getNextRaffle());
+
+  useEffect(() => {
+    const tick = () => setCountdown(getNextRaffle());
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return countdown;
+}
+
+function CountdownNumber({ value, label, compact = false }) {
+  return (
+    <div style={{
+      minWidth: compact ? '48px' : '56px',
+      background: 'rgba(255,255,255,0.72)',
+      border: '1px solid rgba(255,255,255,0.95)',
+      borderRadius: '14px',
+      padding: compact ? '8px 10px' : '10px 12px',
+      textAlign: 'center',
+      boxShadow: '0 4px 18px rgba(0,94,184,0.06)',
+    }}>
+      <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: compact ? '24px' : '30px', color: T.text, lineHeight: 1, fontWeight: 300 }}>{String(value).padStart(2, '0')}</div>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: T.muted, letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: '5px' }}>{label}</div>
+    </div>
+  );
+}
+
+function RaffleCountdown({ align = 'left', compact = false, style = {} }) {
+  const countdown = useRaffleCountdown();
+  const centered = align === 'center';
+
+  return (
+    <div style={{
+      display: 'inline-flex',
+      flexDirection: 'column',
+      alignItems: centered ? 'center' : 'flex-start',
+      gap: '10px',
+      background: 'rgba(255,255,255,0.56)',
+      border: '1px solid rgba(255,255,255,0.9)',
+      borderRadius: '20px',
+      padding: compact ? '14px 16px' : '16px 18px',
+      backdropFilter: 'blur(16px)',
+      boxShadow: '0 8px 30px rgba(0,94,184,0.08)',
+      ...style,
+    }}>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.vaselineBlue, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700 }}>Next Raffle In</div>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: centered ? 'center' : 'flex-start' }}>
+        <CountdownNumber value={countdown.hours} label="Hours" compact={compact} />
+        <CountdownNumber value={countdown.minutes} label="Min" compact={compact} />
+        <CountdownNumber value={countdown.seconds} label="Sec" compact={compact} />
+      </div>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: compact ? '11px' : '12px', color: T.body, lineHeight: 1.45 }}>
+        Daily draw at 9:00 PM.
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { T, iridOrbs, useIsMobile, RaffleCountdown });
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -79,7 +155,7 @@ function Nav() {
           {navItems.map(([id, label]) => (
             <button key={id} onClick={() => scrollTo(id)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '13px', color: T.body, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.03em', padding: 0 }}>{label}</button>
           ))}
-          <button onClick={() => scrollTo('challenge')} style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '13px', background: T.dark, color: '#fff', border: 'none', borderRadius: '100px', padding: '10px 26px', cursor: 'pointer', letterSpacing: '0.04em' }}>Join Now</button>
+          <button onClick={() => scrollTo('challenge')} style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '13px', background: T.vaselineBlue, color: '#fff', border: 'none', borderRadius: '100px', padding: '10px 26px', cursor: 'pointer', letterSpacing: '0.04em', boxShadow: '0 8px 24px rgba(0,94,184,0.22)' }}>Join Now</button>
         </div>
 
         {/* Mobile hamburger */}
@@ -115,8 +191,9 @@ function Nav() {
           <button onClick={() => scrollTo('challenge')} style={{
             display: 'block', width: '100%', marginTop: '16px',
             fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '15px',
-            background: T.dark, color: '#fff', border: 'none',
+            background: T.vaselineBlue, color: '#fff', border: 'none',
             borderRadius: '100px', padding: '16px 32px', cursor: 'pointer', letterSpacing: '0.04em',
+            boxShadow: '0 10px 28px rgba(0,94,184,0.22)',
           }}>Join the Challenge</button>
         </div>
       )}
@@ -163,9 +240,10 @@ function HeroSection() {
 
         {/* Text content */}
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? 'translateY(0)' : 'translateY(32px)', transition: 'opacity 0.9s ease 0.15s, transform 0.9s ease 0.15s' }}>
+          <RaffleCountdown align={isMobile ? 'center' : 'left'} compact={isMobile} style={{ marginBottom: '18px', width: isMobile ? '100%' : 'auto' }} />
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '32px', background: 'rgba(255,255,255,0.65)', borderRadius: '100px', padding: '8px 18px', border: '1px solid rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: T.lavender, display: 'inline-block' }}></span>
-            <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: T.body, letterSpacing: '0.2em', textTransform: 'uppercase' }}>Glow Up Movement · 2024</span>
+            <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: T.body, letterSpacing: '0.2em', textTransform: 'uppercase' }}>Gluta-Hya Moisture Movement</span>
           </div>
 
           <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: isMobile ? 'clamp(44px, 12vw, 64px)' : 'clamp(50px, 6vw, 86px)', fontWeight: 300, color: T.text, lineHeight: 1.04, marginBottom: '28px', letterSpacing: '-0.015em' }}>
@@ -175,7 +253,7 @@ function HeroSection() {
           </h1>
 
           <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 'clamp(15px,1.5vw,17px)', color: T.body, lineHeight: 1.7, marginBottom: '14px', maxWidth: '440px' }}>
-            Your body deserves the same ritual as your face. Build the habit that transforms your skin — in just 21 days.
+            Join the Gluta-Hya moisturizing movement. Tick your daily ritual for 21 days, build the habit, and earn one raffle right for every completed day.
           </p>
           <p style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(17px,1.8vw,21px)', fontStyle: 'italic', color: T.lavender, marginBottom: '44px' }}>
             "Your Body Is Talking. Are You Listening?"
@@ -184,11 +262,11 @@ function HeroSection() {
           <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
             <button
               onClick={() => scrollTo('challenge')}
-              style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '14px', background: T.dark, color: '#fff', border: 'none', borderRadius: '100px', padding: '16px 38px', cursor: 'pointer', letterSpacing: '0.04em', boxShadow: '0 8px 32px rgba(23,24,31,0.18)', transition: 'transform 0.2s, box-shadow 0.2s', minHeight: '52px' }}
-              onMouseEnter={e => { e.target.style.transform = 'scale(1.04)'; e.target.style.boxShadow = '0 12px 48px rgba(23,24,31,0.28)'; }}
-              onMouseLeave={e => { e.target.style.transform = 'scale(1)'; e.target.style.boxShadow = '0 8px 32px rgba(23,24,31,0.18)'; }}
+              style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '14px', background: T.vaselineBlue, color: '#fff', border: 'none', borderRadius: '100px', padding: '16px 38px', cursor: 'pointer', letterSpacing: '0.04em', boxShadow: '0 8px 32px rgba(0,94,184,0.24)', transition: 'transform 0.2s, box-shadow 0.2s', minHeight: '52px' }}
+              onMouseEnter={e => { e.target.style.transform = 'scale(1.04)'; e.target.style.boxShadow = '0 12px 48px rgba(0,94,184,0.34)'; }}
+              onMouseLeave={e => { e.target.style.transform = 'scale(1)'; e.target.style.boxShadow = '0 8px 32px rgba(0,94,184,0.24)'; }}
             >
-              Join the Challenge
+              Start the 21-Day Plan
             </button>
             <button
               onClick={() => scrollTo('movement')}
@@ -201,7 +279,7 @@ function HeroSection() {
           </div>
 
           <div style={{ display: 'flex', gap: isMobile ? '0' : '36px', marginTop: '52px', paddingTop: '36px', borderTop: '1px solid rgba(0,0,0,0.07)', justifyContent: isMobile ? 'space-between' : 'flex-start' }}>
-            {[['5', 'Variants'], ['21', 'Day Ritual'], ['5', 'First Results']].map(([num, label]) => (
+            {[['5', 'Variants'], ['21', 'Day Action Plan'], ['21', 'Daily Raffles']].map(([num, label]) => (
               <div key={label} style={{ flex: isMobile ? 1 : 'none', textAlign: isMobile ? 'center' : 'left' }}>
                 <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: isMobile ? '28px' : '36px', fontWeight: 300, color: T.text, lineHeight: 1 }}>{num}</div>
                 <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: isMobile ? '10px' : '11px', color: T.muted, letterSpacing: '0.06em', marginTop: '4px' }}>{label}</div>

@@ -248,13 +248,16 @@ function CombosSection() {
   const c = COMBOS[active];
 
   return (
-    <section style={{ background: `radial-gradient(ellipse 55% 55% at 10% 30%, oklch(82% 0.07 228 / 0.22) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 90% 70%, oklch(84% 0.07 162 / 0.18) 0%, transparent 60%), #eef0f5`, padding: 'clamp(80px,10vw,130px) clamp(24px,5vw,80px)', overflow: 'hidden', position: 'relative' }}>
-      <div ref={ref} style={{ maxWidth: '1200px', margin: '0 auto', opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(40px)', transition: 'all 0.9s ease' }}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+    <section style={{ background: `radial-gradient(ellipse 55% 55% at 10% 30%, oklch(82% 0.07 228 / 0.22) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 90% 70%, oklch(84% 0.07 162 / 0.18) 0%, transparent 60%), #eef0f5`, padding: 'clamp(80px,10vw,130px) clamp(24px,5vw,80px)', overflow: 'hidden', position: 'relative', isolation: 'isolate' }}>
+      <div ref={ref} style={{ maxWidth: '1200px', margin: '0 auto', opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(40px)', transition: 'all 0.9s ease', position: 'relative', zIndex: 1 }}>
+        <div style={{ textAlign: 'center', marginBottom: '48px', position: 'relative', zIndex: 2 }}>
           <SectionLabel text="Smart Combinations" />
           <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(38px,4.5vw,60px)', fontWeight: 300, color: T.text, lineHeight: 1.1, marginBottom: '16px' }}>
             Build your<br/>
-            <em style={{ fontStyle: 'italic', background: `linear-gradient(120deg, ${c.accent}, ${T.lavender})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', transition: 'all 0.5s' }}>body care wardrobe.</em>
+            <em style={{ fontStyle: 'italic', position: 'relative', display: 'inline-block', color: T.text, zIndex: 0 }}>
+              <span style={{ position: 'absolute', inset: '0 -0.08em', borderRadius: '999px', background: `linear-gradient(120deg, ${c.accent}, ${T.lavender})`, opacity: 0.28, filter: 'blur(14px)', transform: 'translateY(0.08em)', zIndex: -1, transition: 'background 0.45s ease, opacity 0.45s ease' }}></span>
+              <span style={{ position: 'relative', zIndex: 1, color: c.accent, textShadow: '0 1px 0 rgba(255,255,255,0.75)', transition: 'color 0.35s ease' }}>body care wardrobe.</span>
+            </em>
           </h2>
         </div>
 

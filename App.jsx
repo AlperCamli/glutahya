@@ -25,19 +25,19 @@ function FloatingCTA() {
         onClick={() => document.getElementById('challenge')?.scrollIntoView({ behavior: 'smooth' })}
         style={{
           fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '14px',
-          background: 'rgba(23,24,31,0.92)', color: '#fff',
+          background: '#005EB8', color: '#fff',
           border: '1px solid rgba(255,255,255,0.15)',
           borderRadius: '100px', padding: '14px 32px',
           cursor: 'pointer', letterSpacing: '0.05em',
           backdropFilter: 'blur(16px)',
-          boxShadow: '0 8px 32px rgba(23,24,31,0.28), 0 2px 8px rgba(23,24,31,0.15)',
+          boxShadow: '0 8px 32px rgba(0,94,184,0.3), 0 2px 8px rgba(0,94,184,0.16)',
           whiteSpace: 'nowrap',
           transition: 'transform 0.2s, box-shadow 0.2s',
         }}
-        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 16px 48px rgba(23,24,31,0.38)'; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(23,24,31,0.28), 0 2px 8px rgba(23,24,31,0.15)'; }}
+        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,94,184,0.4)'; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,94,184,0.3), 0 2px 8px rgba(0,94,184,0.16)'; }}
       >
-        Start Your Routine ✦
+        Tick Today & Join Raffle
       </button>
     </div>
   );

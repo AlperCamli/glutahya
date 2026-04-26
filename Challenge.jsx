@@ -21,6 +21,12 @@ const MILESTONES = {
   21: { label: 'Champion', icon: '★', msg: 'You did it. 21 days of showing up for your skin. This is your new glow.' },
 };
 
+const ACTION_PLAN = [
+  { days: 'Days 1-7', title: 'Start the moisture ritual', desc: 'Apply Gluta-Hya after showering, then tick the calendar to claim that day\'s raffle right.', accent: T.lavender },
+  { days: 'Days 8-14', title: 'Make it automatic', desc: 'Keep your bottle visible and pair body care with your face routine so the habit needs less effort.', accent: T.blue },
+  { days: 'Days 15-21', title: 'Lock in the glow', desc: 'Complete the final stretch, protect your streak, and collect every remaining raffle right.', accent: T.mint },
+];
+
 function GlowMeter({ progress }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
@@ -70,6 +76,7 @@ function ChallengeSection() {
   };
 
   const count = completed.length;
+  const raffleRights = count;
   const pct = (count / 21) * 100;
   let streak = 0;
   for (let i = 1; i <= 21; i++) { if (completed.includes(i)) streak++; else break; }
@@ -91,7 +98,7 @@ function ChallengeSection() {
             <em style={{ fontStyle: 'italic', background: `linear-gradient(120deg, ${T.lavender}, ${T.blue}, ${T.mint})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Glow Challenge</em>
           </h2>
           <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '16px', color: T.body, maxWidth: '480px', margin: '0 auto', lineHeight: 1.65 }}>
-            Tap a day when you've completed your ritual. Watch your glow build with every check-in.
+            Tap the calendar every day you use Gluta-Hya. Each tick builds your habit and gives you one right to join that day's raffle.
           </p>
         </div>
 
@@ -115,13 +122,14 @@ function ChallengeSection() {
           {/* Main tracker */}
           <div>
             {/* Stats row */}
-            <div style={{ display: 'flex', gap: isMobile ? '8px' : '16px', marginBottom: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, minmax(0, 1fr))' : 'repeat(4, minmax(0, 1fr))', gap: isMobile ? '8px' : '16px', marginBottom: '32px' }}>
               {[
                 { label: 'Days Done', value: count, unit: '/ 21' },
+                { label: 'Raffle Rights', value: raffleRights, unit: raffleRights === 1 ? 'right' : 'rights' },
                 { label: 'Streak', value: streak, unit: 'days' },
                 { label: 'Progress', value: Math.round(pct), unit: '%' },
               ].map(s => (
-                <div key={s.label} style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.95)', borderRadius: '16px', padding: isMobile ? '16px 12px' : '20px 24px', flex: 1, backdropFilter: 'blur(16px)', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                <div key={s.label} style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.95)', borderRadius: '16px', padding: isMobile ? '16px 12px' : '20px 24px', backdropFilter: 'blur(16px)', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
                   <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: isMobile ? '28px' : '36px', fontWeight: 300, color: T.text, lineHeight: 1 }}>
                     {s.value}<span style={{ fontSize: isMobile ? '12px' : '16px', color: T.muted, marginLeft: '3px' }}>{s.unit}</span>
                   </div>
@@ -167,6 +175,20 @@ function ChallengeSection() {
               })}
             </div>
 
+            <div style={{ background: 'rgba(255,255,255,0.78)', border: `1px solid rgba(0,94,184,0.16)`, borderRadius: '16px', padding: isMobile ? '18px' : '20px 24px', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'auto 1fr auto', alignItems: 'center', gap: '14px', backdropFilter: 'blur(16px)', boxShadow: '0 8px 30px rgba(0,94,184,0.08)', marginBottom: '28px' }}>
+              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(0,94,184,0.1)', color: T.vaselineBlue, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'DM Sans, sans-serif', fontSize: '18px', fontWeight: 700 }}>1</div>
+              <div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: T.vaselineBlue, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: '5px', fontWeight: 700 }}>Daily Raffle Rule</div>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: T.body, lineHeight: 1.6 }}>
+                  One completed day equals one raffle right. Tick today after moisturizing to enter the daily draw.
+                </p>
+              </div>
+              <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
+                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '34px', color: T.text, lineHeight: 1 }}>{raffleRights}</div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.muted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{raffleRights === 1 ? 'right earned' : 'rights earned'}</div>
+              </div>
+            </div>
+
             {/* Milestone message */}
             {ms && (
               <div style={{ background: 'rgba(255,255,255,0.8)', border: `1px solid ${T.lavender}44`, borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', gap: '16px', backdropFilter: 'blur(16px)', boxShadow: `0 8px 32px ${T.lavender}22`, animation: 'expandIn 0.4s ease' }}>
@@ -180,7 +202,7 @@ function ChallengeSection() {
 
             {count === 0 && (
               <div style={{ textAlign: 'center', padding: '20px', color: T.muted, fontFamily: 'DM Sans, sans-serif', fontSize: '14px' }}>
-                Tap any day above to begin tracking your ritual ↑
+                Tap any day above to begin tracking your ritual and earn your first raffle right ↑
               </div>
             )}
           </div>
@@ -236,6 +258,27 @@ function ChallengeSection() {
             })}
           </div>
         )}
+
+        <div style={{ marginTop: '44px', background: 'rgba(255,255,255,0.68)', border: '1px solid rgba(255,255,255,0.95)', borderRadius: '24px', padding: isMobile ? '24px 18px' : '30px', backdropFilter: 'blur(18px)', boxShadow: '0 8px 36px rgba(0,0,0,0.05)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '18px', alignItems: isMobile ? 'flex-start' : 'end', flexDirection: isMobile ? 'column' : 'row', marginBottom: '22px' }}>
+            <div>
+              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.muted, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '10px' }}>21-Day Action Plan</div>
+              <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(28px,3vw,40px)', fontWeight: 300, color: T.text, lineHeight: 1.1 }}>Build the habit in three clear phases.</h3>
+            </div>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: T.body, lineHeight: 1.65, maxWidth: '360px' }}>
+              The plan keeps the action simple: moisturize, tick the day, collect the raffle right, repeat.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '12px' }}>
+            {ACTION_PLAN.map(phase => (
+              <div key={phase.days} style={{ background: 'rgba(255,255,255,0.74)', border: `1px solid ${phase.accent.replace(')', ' / 0.24)')}`, borderRadius: '18px', padding: '20px', minHeight: '168px' }}>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: phase.accent, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '12px', fontWeight: 700 }}>{phase.days}</div>
+                <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '24px', color: T.text, fontWeight: 500, lineHeight: 1.15, marginBottom: '10px' }}>{phase.title}</h4>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '13px', color: T.body, lineHeight: 1.6 }}>{phase.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -348,28 +391,30 @@ function SocialSection() {
 
 function CTASection() {
   const [ref, visible] = useRevealC();
+  const isMobile = useIsMobile(600);
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
     <section id="cta-section" style={{ background: `${iridOrbs}, ${T.bg}`, padding: 'clamp(100px,12vw,160px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
       <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)`, backgroundSize: '28px 28px', pointerEvents: 'none', opacity: 0.6 }}></div>
       <div ref={ref} style={{ maxWidth: '780px', margin: '0 auto', position: 'relative', opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(40px)', transition: 'all 0.9s ease' }}>
-        <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(13px,1.5vw,15px)', fontStyle: 'italic', color: T.lavender, letterSpacing: '0.04em', marginBottom: '24px' }}>21 days. 5 variants. 1 movement.</div>
+        <RaffleCountdown align="center" compact={isMobile} style={{ marginBottom: '28px' }} />
+        <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(13px,1.5vw,15px)', fontStyle: 'italic', color: T.lavender, letterSpacing: '0.04em', marginBottom: '24px' }}>21 days. 21 raffle chances. 1 movement.</div>
         <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(44px,6vw,80px)', fontWeight: 300, color: T.text, lineHeight: 1.05, marginBottom: '28px', letterSpacing: '-0.015em' }}>
           Your glow is<br/>
           <em style={{ fontStyle: 'italic', background: `linear-gradient(120deg, ${T.lavender}, ${T.blue}, ${T.mint})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>21 days away.</em>
         </h2>
         <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '17px', color: T.body, lineHeight: 1.7, maxWidth: '520px', margin: '0 auto 48px' }}>
-          Start today. One pump, once a day, for three weeks. Your body will feel the difference — and so will you.
+          Start today. One pump, once a day, for three weeks. Tick each completed day to collect your raffle right and keep your body-care habit glowing.
         </p>
         <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '56px' }}>
           <button
             onClick={() => scrollTo('challenge')}
-            style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '15px', background: T.dark, color: '#fff', border: 'none', borderRadius: '100px', padding: '18px 48px', cursor: 'pointer', letterSpacing: '0.05em', boxShadow: '0 8px 40px rgba(23,24,31,0.2)', transition: 'transform 0.2s, box-shadow 0.2s', minHeight: '56px' }}
-            onMouseEnter={e => { e.target.style.transform = 'scale(1.05)'; e.target.style.boxShadow = '0 16px 60px rgba(23,24,31,0.3)'; }}
-            onMouseLeave={e => { e.target.style.transform = 'scale(1)'; e.target.style.boxShadow = '0 8px 40px rgba(23,24,31,0.2)'; }}
+            style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '15px', background: T.vaselineBlue, color: '#fff', border: 'none', borderRadius: '100px', padding: '18px 48px', cursor: 'pointer', letterSpacing: '0.05em', boxShadow: '0 8px 40px rgba(0,94,184,0.26)', transition: 'transform 0.2s, box-shadow 0.2s', minHeight: '56px' }}
+            onMouseEnter={e => { e.target.style.transform = 'scale(1.05)'; e.target.style.boxShadow = '0 16px 60px rgba(0,94,184,0.36)'; }}
+            onMouseLeave={e => { e.target.style.transform = 'scale(1)'; e.target.style.boxShadow = '0 8px 40px rgba(0,94,184,0.26)'; }}
           >
-            Start My 21-Day Challenge
+            Start My 21-Day Plan
           </button>
           <button
             onClick={() => scrollTo('products')}
