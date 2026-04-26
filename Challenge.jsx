@@ -27,6 +27,12 @@ const ACTION_PLAN = [
   { days: 'Days 15-21', title: 'Lock in the glow', desc: 'Complete the final stretch, protect your streak, and collect every remaining raffle right.', accent: T.mint },
 ];
 
+const RAFFLE_SPARKS = [
+  ['-86px', '-48px'], ['-56px', '-78px'], ['-18px', '-92px'], ['34px', '-86px'],
+  ['76px', '-56px'], ['92px', '-12px'], ['70px', '38px'], ['20px', '62px'],
+  ['-34px', '58px'], ['-82px', '22px'],
+];
+
 function GlowMeter({ progress }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
@@ -66,6 +72,14 @@ function ChallengeSection() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
   });
   const [hovered, setHovered] = useState(null);
+  const [raffleMoment, setRaffleMoment] = useState(null);
+  const raffleMomentTimer = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (raffleMomentTimer.current) clearTimeout(raffleMomentTimer.current);
+    };
+  }, []);
 
   const toggle = (day) => {
     setCompleted(prev => {
@@ -73,6 +87,23 @@ function ChallengeSection() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       return next;
     });
+  };
+
+  const joinRaffle = () => {
+    const numericDays = completed.filter(day => Number.isFinite(day));
+    const latestDay = numericDays.length ? Math.max(...numericDays) : 0;
+    const nextDay = Math.min(latestDay + 1, 21);
+    const alreadyComplete = latestDay >= 21;
+    const nextCompleted = alreadyComplete ? completed : [...new Set([...completed, nextDay])];
+
+    if (!alreadyComplete) {
+      setCompleted(nextCompleted);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextCompleted));
+    }
+
+    setRaffleMoment({ day: nextDay, token: Date.now(), alreadyComplete });
+    if (raffleMomentTimer.current) clearTimeout(raffleMomentTimer.current);
+    raffleMomentTimer.current = setTimeout(() => setRaffleMoment(null), 1900);
   };
 
   const count = completed.length;
@@ -100,6 +131,72 @@ function ChallengeSection() {
           <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '16px', color: T.body, maxWidth: '480px', margin: '0 auto', lineHeight: 1.65 }}>
             Tap the calendar every day you use Gluta-Hya. Each tick builds your habit and gives you one right to join that day's raffle.
           </p>
+          <div style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', marginTop: '28px' }}>
+            <button
+              onClick={joinRaffle}
+              style={{
+                position: 'relative',
+                zIndex: 2,
+                fontFamily: 'DM Sans, sans-serif',
+                fontWeight: 700,
+                fontSize: '14px',
+                background: T.vaselineBlue,
+                color: '#fff',
+                border: 'none',
+                borderRadius: '100px',
+                padding: isMobile ? '15px 34px' : '17px 44px',
+                cursor: 'pointer',
+                letterSpacing: '0.05em',
+                boxShadow: '0 12px 38px rgba(0,94,184,0.28), inset 0 1px 0 rgba(255,255,255,0.22)',
+                minHeight: '54px',
+                animation: raffleMoment ? 'raffleButtonPop 680ms cubic-bezier(.2,.9,.2,1)' : 'none',
+                transition: 'box-shadow 0.2s, transform 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 52px rgba(0,94,184,0.36), inset 0 1px 0 rgba(255,255,255,0.22)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 12px 38px rgba(0,94,184,0.28), inset 0 1px 0 rgba(255,255,255,0.22)'; }}
+            >
+              Join The Raffle
+            </button>
+
+            {raffleMoment && (
+              <>
+                <div style={{ position: 'absolute', left: '50%', top: '50%', pointerEvents: 'none', zIndex: 1 }}>
+                  {RAFFLE_SPARKS.map(([dx, dy], i) => (
+                    <span key={`${raffleMoment.token}-${i}`} style={{
+                      '--dx': dx,
+                      '--dy': dy,
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      width: i % 3 === 0 ? '10px' : '7px',
+                      height: i % 3 === 0 ? '10px' : '7px',
+                      borderRadius: '50%',
+                      background: i % 2 === 0 ? T.vaselineBlue : `linear-gradient(135deg, ${T.lavender}, ${T.mint})`,
+                      boxShadow: '0 0 18px rgba(0,94,184,0.24)',
+                      animation: `raffleSpark ${760 + i * 28}ms cubic-bezier(.16,.9,.22,1) forwards`,
+                    }}></span>
+                  ))}
+                </div>
+                <div style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 12px)',
+                  zIndex: 3,
+                  whiteSpace: 'nowrap',
+                  background: 'rgba(255,255,255,0.9)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  borderRadius: '100px',
+                  padding: '9px 16px',
+                  boxShadow: '0 12px 34px rgba(0,94,184,0.16)',
+                  backdropFilter: 'blur(16px)',
+                  animation: 'raffleToast 1.9s ease forwards',
+                }}>
+                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: T.vaselineBlue, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    {raffleMoment.alreadyComplete ? 'All raffle rights earned' : `Day ${raffleMoment.day} entry confirmed`}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Mobile: compact progress row above tracker */}
@@ -144,16 +241,17 @@ function ChallengeSection() {
                 const done = completed.includes(day);
                 const isMilestone = [7, 14, 21].includes(day);
                 const isHovered = hovered === day;
+                const isRaffleJoined = raffleMoment?.day === day && done;
                 return (
                   <button key={day} onClick={() => toggle(day)}
                     onMouseEnter={() => setHovered(day)} onMouseLeave={() => setHovered(null)}
                     style={{
                       aspectRatio: '1', borderRadius: isMobile ? '10px' : '14px',
                       background: done
-                        ? `linear-gradient(135deg, ${T.lavender}, ${T.blue})`
+                        ? isRaffleJoined ? `linear-gradient(135deg, ${T.vaselineBlue}, ${T.lavender}, ${T.mint})` : `linear-gradient(135deg, ${T.lavender}, ${T.blue})`
                         : isHovered ? 'rgba(255,255,255,0.9)' : isMilestone ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.5)',
                       border: done
-                        ? `1px solid ${T.lavender}`
+                        ? `1px solid ${isRaffleJoined ? T.vaselineBlue : T.lavender}`
                         : isMilestone ? `1px solid ${T.lavender}55` : '1px solid rgba(255,255,255,0.9)',
                       color: done ? '#fff' : isMilestone ? T.lavender : T.body,
                       fontFamily: done ? 'DM Sans, sans-serif' : 'Cormorant Garamond, serif',
@@ -161,14 +259,16 @@ function ChallengeSection() {
                       fontWeight: done ? 700 : 300,
                       cursor: 'pointer',
                       transition: 'all 0.25s ease',
-                      boxShadow: done ? `0 4px 16px ${T.lavender}55` : isHovered ? '0 4px 16px rgba(0,0,0,0.08)' : 'none',
+                      boxShadow: done ? (isRaffleJoined ? '0 0 0 6px rgba(0,94,184,0.08), 0 14px 34px rgba(0,94,184,0.22)' : `0 4px 16px ${T.lavender}55`) : isHovered ? '0 4px 16px rgba(0,0,0,0.08)' : 'none',
                       transform: isHovered && !done ? 'scale(1.07)' : 'none',
+                      animation: isRaffleJoined ? 'raffleDayPulse 780ms cubic-bezier(.2,.9,.2,1)' : 'none',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexDirection: 'column', gap: '2px',
                       backdropFilter: 'blur(12px)',
                       minHeight: '44px',
                     }}>
                     {done ? '✓' : day}
+                    {isRaffleJoined && <span style={{ fontSize: '7px', letterSpacing: '0.08em', fontFamily: 'DM Sans, sans-serif', opacity: 0.92 }}>ENTRY</span>}
                     {isMilestone && !done && <span style={{ fontSize: '7px', letterSpacing: '0.08em', fontFamily: 'DM Sans, sans-serif', opacity: 0.7 }}>{day === 7 ? 'WK1' : day === 14 ? 'HALF' : 'END'}</span>}
                   </button>
                 );
