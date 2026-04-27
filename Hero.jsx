@@ -36,7 +36,7 @@ function useIsMobile(breakpoint = 768) {
   return isMobile;
 }
 
-function getNextRaffle(now = new Date()) {
+function getNextGiveaway(now = new Date()) {
   const target = new Date(now);
   target.setHours(21, 0, 0, 0);
   if (now >= target) target.setDate(target.getDate() + 1);
@@ -50,11 +50,11 @@ function getNextRaffle(now = new Date()) {
   };
 }
 
-function useRaffleCountdown() {
-  const [countdown, setCountdown] = useState(() => getNextRaffle());
+function useGiveawayCountdown() {
+  const [countdown, setCountdown] = useState(() => getNextGiveaway());
 
   useEffect(() => {
-    const tick = () => setCountdown(getNextRaffle());
+    const tick = () => setCountdown(getNextGiveaway());
     tick();
     const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
@@ -80,8 +80,8 @@ function CountdownNumber({ value, label, compact = false }) {
   );
 }
 
-function RaffleCountdown({ align = 'left', compact = false, style = {} }) {
-  const countdown = useRaffleCountdown();
+function GiveawayCountdown({ align = 'left', compact = false, style = {} }) {
+  const countdown = useGiveawayCountdown();
   const centered = align === 'center';
 
   return (
@@ -98,7 +98,7 @@ function RaffleCountdown({ align = 'left', compact = false, style = {} }) {
       boxShadow: '0 8px 30px rgba(0,94,184,0.08)',
       ...style,
     }}>
-      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.vaselineBlue, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700 }}>Next Raffle In</div>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.vaselineBlue, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700 }}>Next Giveaway In</div>
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: centered ? 'center' : 'flex-start' }}>
         <CountdownNumber value={countdown.hours} label="Hours" compact={compact} />
         <CountdownNumber value={countdown.minutes} label="Min" compact={compact} />
@@ -107,11 +107,26 @@ function RaffleCountdown({ align = 'left', compact = false, style = {} }) {
       <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: compact ? '11px' : '12px', color: T.body, lineHeight: 1.45 }}>
         Daily draw at 9:00 PM.
       </div>
+      <div style={{
+        width: '100%',
+        background: 'linear-gradient(135deg, rgba(0,94,184,0.1), rgba(124,142,255,0.07))',
+        border: '1px solid rgba(0,94,184,0.2)',
+        borderRadius: '14px',
+        padding: compact ? '10px 12px' : '11px 14px',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7)',
+      }}>
+        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: T.vaselineBlue, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '3px' }}>
+          Giveaway Boost
+        </div>
+        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: compact ? '11px' : '12px', color: T.body, lineHeight: 1.5 }}>
+          Check in every day to multiply your odds and get a chance to win a Vaseline Ritual Set.
+        </div>
+      </div>
     </div>
   );
 }
 
-Object.assign(window, { T, iridOrbs, useIsMobile, RaffleCountdown });
+Object.assign(window, { T, iridOrbs, useIsMobile, GiveawayCountdown });
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -240,7 +255,7 @@ function HeroSection() {
 
         {/* Text content */}
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? 'translateY(0)' : 'translateY(32px)', transition: 'opacity 0.9s ease 0.15s, transform 0.9s ease 0.15s' }}>
-          <RaffleCountdown align={isMobile ? 'center' : 'left'} compact={isMobile} style={{ marginBottom: '18px', width: isMobile ? '100%' : 'auto' }} />
+          <GiveawayCountdown align={isMobile ? 'center' : 'left'} compact={isMobile} style={{ marginBottom: '18px', width: isMobile ? '100%' : 'auto' }} />
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '32px', background: 'rgba(255,255,255,0.65)', borderRadius: '100px', padding: '8px 18px', border: '1px solid rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: T.lavender, display: 'inline-block' }}></span>
             <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: T.body, letterSpacing: '0.2em', textTransform: 'uppercase' }}>Gluta-Hya Moisture Movement</span>
@@ -253,7 +268,7 @@ function HeroSection() {
           </h1>
 
           <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 'clamp(15px,1.5vw,17px)', color: T.body, lineHeight: 1.7, marginBottom: '14px', maxWidth: '440px' }}>
-            Join the Gluta-Hya moisturizing movement. Tick your daily ritual for 21 days, build the habit, and earn one raffle right for every completed day.
+            Join the Gluta-Hya moisturizing movement. Tick your daily ritual for 21 days, build the habit, and earn one Giveaway right for every completed day.
           </p>
           <p style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(17px,1.8vw,21px)', fontStyle: 'italic', color: T.lavender, marginBottom: '44px' }}>
             "Your Body Is Talking. Are You Listening?"
@@ -279,7 +294,7 @@ function HeroSection() {
           </div>
 
           <div style={{ display: 'flex', gap: isMobile ? '0' : '36px', marginTop: '52px', paddingTop: '36px', borderTop: '1px solid rgba(0,0,0,0.07)', justifyContent: isMobile ? 'space-between' : 'flex-start' }}>
-            {[['5', 'Variants'], ['21', 'Day Action Plan'], ['21', 'Daily Raffles']].map(([num, label]) => (
+            {[['5', 'Variants'], ['21', 'Day Action Plan'], ['21', 'Daily Giveaways']].map(([num, label]) => (
               <div key={label} style={{ flex: isMobile ? 1 : 'none', textAlign: isMobile ? 'center' : 'left' }}>
                 <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: isMobile ? '28px' : '36px', fontWeight: 300, color: T.text, lineHeight: 1 }}>{num}</div>
                 <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: isMobile ? '10px' : '11px', color: T.muted, letterSpacing: '0.06em', marginTop: '4px' }}>{label}</div>
@@ -345,3 +360,4 @@ function HeroSection() {
 }
 
 Object.assign(window, { Nav, HeroSection });
+

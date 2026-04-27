@@ -37,7 +37,7 @@ function FloatingCTA() {
         onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,94,184,0.4)'; }}
         onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,94,184,0.3), 0 2px 8px rgba(0,94,184,0.16)'; }}
       >
-        Tick Today & Join Raffle
+        Tick Today & Join Giveaway
       </button>
     </div>
   );
@@ -95,3 +95,4 @@ function TweaksPanel({ tweaks, setTweaks }) {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
+

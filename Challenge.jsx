@@ -22,12 +22,12 @@ const MILESTONES = {
 };
 
 const ACTION_PLAN = [
-  { days: 'Days 1-7', title: 'Start the moisture ritual', desc: 'Apply Gluta-Hya after showering, then tick the calendar to claim that day\'s raffle right.', accent: T.lavender },
+  { days: 'Days 1-7', title: 'Start the moisture ritual', desc: 'Apply Gluta-Hya after showering, then tick the calendar to claim that day\'s Giveaway right.', accent: T.lavender },
   { days: 'Days 8-14', title: 'Make it automatic', desc: 'Keep your bottle visible and pair body care with your face routine so the habit needs less effort.', accent: T.blue },
-  { days: 'Days 15-21', title: 'Lock in the glow', desc: 'Complete the final stretch, protect your streak, and collect every remaining raffle right.', accent: T.mint },
+  { days: 'Days 15-21', title: 'Lock in the glow', desc: 'Complete the final stretch, protect your streak, and collect every remaining Giveaway right.', accent: T.mint },
 ];
 
-const RAFFLE_SPARKS = [
+const giveawaySparks = [
   ['-86px', '-48px'], ['-56px', '-78px'], ['-18px', '-92px'], ['34px', '-86px'],
   ['76px', '-56px'], ['92px', '-12px'], ['70px', '38px'], ['20px', '62px'],
   ['-34px', '58px'], ['-82px', '22px'],
@@ -72,12 +72,12 @@ function ChallengeSection() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
   });
   const [hovered, setHovered] = useState(null);
-  const [raffleMoment, setRaffleMoment] = useState(null);
-  const raffleMomentTimer = useRef(null);
+  const [giveawayMoment, setGiveawayMoment] = useState(null);
+  const giveawayMomentTimer = useRef(null);
 
   useEffect(() => {
     return () => {
-      if (raffleMomentTimer.current) clearTimeout(raffleMomentTimer.current);
+      if (giveawayMomentTimer.current) clearTimeout(giveawayMomentTimer.current);
     };
   }, []);
 
@@ -89,7 +89,7 @@ function ChallengeSection() {
     });
   };
 
-  const joinRaffle = () => {
+  const joinGiveaway = () => {
     const numericDays = completed.filter(day => Number.isFinite(day));
     const latestDay = numericDays.length ? Math.max(...numericDays) : 0;
     const nextDay = Math.min(latestDay + 1, 21);
@@ -101,13 +101,13 @@ function ChallengeSection() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(nextCompleted));
     }
 
-    setRaffleMoment({ day: nextDay, token: Date.now(), alreadyComplete });
-    if (raffleMomentTimer.current) clearTimeout(raffleMomentTimer.current);
-    raffleMomentTimer.current = setTimeout(() => setRaffleMoment(null), 1900);
+    setGiveawayMoment({ day: nextDay, token: Date.now(), alreadyComplete });
+    if (giveawayMomentTimer.current) clearTimeout(giveawayMomentTimer.current);
+    giveawayMomentTimer.current = setTimeout(() => setGiveawayMoment(null), 1900);
   };
 
   const count = completed.length;
-  const raffleRights = count;
+  const giveawayRights = count;
   const pct = (count / 21) * 100;
   let streak = 0;
   for (let i = 1; i <= 21; i++) { if (completed.includes(i)) streak++; else break; }
@@ -129,11 +129,11 @@ function ChallengeSection() {
             <em style={{ fontStyle: 'italic', background: `linear-gradient(120deg, ${T.lavender}, ${T.blue}, ${T.mint})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Glow Challenge</em>
           </h2>
           <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '16px', color: T.body, maxWidth: '480px', margin: '0 auto', lineHeight: 1.65 }}>
-            Tap the calendar every day you use Gluta-Hya. Each tick builds your habit and gives you one right to join that day's raffle.
+            Tap the calendar every day you use Gluta-Hya. Each tick builds your habit and gives you one right to join that day's Giveaway.
           </p>
           <div style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', marginTop: '28px' }}>
             <button
-              onClick={joinRaffle}
+              onClick={joinGiveaway}
               style={{
                 position: 'relative',
                 zIndex: 2,
@@ -149,20 +149,20 @@ function ChallengeSection() {
                 letterSpacing: '0.05em',
                 boxShadow: '0 12px 38px rgba(0,94,184,0.28), inset 0 1px 0 rgba(255,255,255,0.22)',
                 minHeight: '54px',
-                animation: raffleMoment ? 'raffleButtonPop 680ms cubic-bezier(.2,.9,.2,1)' : 'none',
+                animation: giveawayMoment ? 'giveawayButtonPop 680ms cubic-bezier(.2,.9,.2,1)' : 'none',
                 transition: 'box-shadow 0.2s, transform 0.2s',
               }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 52px rgba(0,94,184,0.36), inset 0 1px 0 rgba(255,255,255,0.22)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 12px 38px rgba(0,94,184,0.28), inset 0 1px 0 rgba(255,255,255,0.22)'; }}
             >
-              Join The Raffle
+              Join The Giveaway
             </button>
 
-            {raffleMoment && (
+            {giveawayMoment && (
               <>
                 <div style={{ position: 'absolute', left: '50%', top: '50%', pointerEvents: 'none', zIndex: 1 }}>
-                  {RAFFLE_SPARKS.map(([dx, dy], i) => (
-                    <span key={`${raffleMoment.token}-${i}`} style={{
+                  {giveawaySparks.map(([dx, dy], i) => (
+                    <span key={`${giveawayMoment.token}-${i}`} style={{
                       '--dx': dx,
                       '--dy': dy,
                       position: 'absolute',
@@ -173,7 +173,7 @@ function ChallengeSection() {
                       borderRadius: '50%',
                       background: i % 2 === 0 ? T.vaselineBlue : `linear-gradient(135deg, ${T.lavender}, ${T.mint})`,
                       boxShadow: '0 0 18px rgba(0,94,184,0.24)',
-                      animation: `raffleSpark ${760 + i * 28}ms cubic-bezier(.16,.9,.22,1) forwards`,
+                      animation: `giveawaySpark ${760 + i * 28}ms cubic-bezier(.16,.9,.22,1) forwards`,
                     }}></span>
                   ))}
                 </div>
@@ -188,10 +188,10 @@ function ChallengeSection() {
                   padding: '9px 16px',
                   boxShadow: '0 12px 34px rgba(0,94,184,0.16)',
                   backdropFilter: 'blur(16px)',
-                  animation: 'raffleToast 1.9s ease forwards',
+                  animation: 'giveawayToast 1.9s ease forwards',
                 }}>
                   <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: T.vaselineBlue, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                    {raffleMoment.alreadyComplete ? 'All raffle rights earned' : `Day ${raffleMoment.day} entry confirmed`}
+                    {giveawayMoment.alreadyComplete ? 'All Giveaway rights earned' : `Day ${giveawayMoment.day} entry confirmed`}
                   </span>
                 </div>
               </>
@@ -222,7 +222,7 @@ function ChallengeSection() {
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, minmax(0, 1fr))' : 'repeat(4, minmax(0, 1fr))', gap: isMobile ? '8px' : '16px', marginBottom: '32px' }}>
               {[
                 { label: 'Days Done', value: count, unit: '/ 21' },
-                { label: 'Raffle Rights', value: raffleRights, unit: raffleRights === 1 ? 'right' : 'rights' },
+                { label: 'Giveaway Rights', value: giveawayRights, unit: giveawayRights === 1 ? 'right' : 'rights' },
                 { label: 'Streak', value: streak, unit: 'days' },
                 { label: 'Progress', value: Math.round(pct), unit: '%' },
               ].map(s => (
@@ -241,17 +241,17 @@ function ChallengeSection() {
                 const done = completed.includes(day);
                 const isMilestone = [7, 14, 21].includes(day);
                 const isHovered = hovered === day;
-                const isRaffleJoined = raffleMoment?.day === day && done;
+                const isGiveawayJoined = giveawayMoment?.day === day && done;
                 return (
                   <button key={day} onClick={() => toggle(day)}
                     onMouseEnter={() => setHovered(day)} onMouseLeave={() => setHovered(null)}
                     style={{
                       aspectRatio: '1', borderRadius: isMobile ? '10px' : '14px',
                       background: done
-                        ? isRaffleJoined ? `linear-gradient(135deg, ${T.vaselineBlue}, ${T.lavender}, ${T.mint})` : `linear-gradient(135deg, ${T.lavender}, ${T.blue})`
+                        ? isGiveawayJoined ? `linear-gradient(135deg, ${T.vaselineBlue}, ${T.lavender}, ${T.mint})` : `linear-gradient(135deg, ${T.lavender}, ${T.blue})`
                         : isHovered ? 'rgba(255,255,255,0.9)' : isMilestone ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.5)',
                       border: done
-                        ? `1px solid ${isRaffleJoined ? T.vaselineBlue : T.lavender}`
+                        ? `1px solid ${isGiveawayJoined ? T.vaselineBlue : T.lavender}`
                         : isMilestone ? `1px solid ${T.lavender}55` : '1px solid rgba(255,255,255,0.9)',
                       color: done ? '#fff' : isMilestone ? T.lavender : T.body,
                       fontFamily: done ? 'DM Sans, sans-serif' : 'Cormorant Garamond, serif',
@@ -259,16 +259,16 @@ function ChallengeSection() {
                       fontWeight: done ? 700 : 300,
                       cursor: 'pointer',
                       transition: 'all 0.25s ease',
-                      boxShadow: done ? (isRaffleJoined ? '0 0 0 6px rgba(0,94,184,0.08), 0 14px 34px rgba(0,94,184,0.22)' : `0 4px 16px ${T.lavender}55`) : isHovered ? '0 4px 16px rgba(0,0,0,0.08)' : 'none',
+                      boxShadow: done ? (isGiveawayJoined ? '0 0 0 6px rgba(0,94,184,0.08), 0 14px 34px rgba(0,94,184,0.22)' : `0 4px 16px ${T.lavender}55`) : isHovered ? '0 4px 16px rgba(0,0,0,0.08)' : 'none',
                       transform: isHovered && !done ? 'scale(1.07)' : 'none',
-                      animation: isRaffleJoined ? 'raffleDayPulse 780ms cubic-bezier(.2,.9,.2,1)' : 'none',
+                      animation: isGiveawayJoined ? 'giveawayDayPulse 780ms cubic-bezier(.2,.9,.2,1)' : 'none',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexDirection: 'column', gap: '2px',
                       backdropFilter: 'blur(12px)',
                       minHeight: '44px',
                     }}>
                     {done ? '✓' : day}
-                    {isRaffleJoined && <span style={{ fontSize: '7px', letterSpacing: '0.08em', fontFamily: 'DM Sans, sans-serif', opacity: 0.92 }}>ENTRY</span>}
+                    {isGiveawayJoined && <span style={{ fontSize: '7px', letterSpacing: '0.08em', fontFamily: 'DM Sans, sans-serif', opacity: 0.92 }}>ENTRY</span>}
                     {isMilestone && !done && <span style={{ fontSize: '7px', letterSpacing: '0.08em', fontFamily: 'DM Sans, sans-serif', opacity: 0.7 }}>{day === 7 ? 'WK1' : day === 14 ? 'HALF' : 'END'}</span>}
                   </button>
                 );
@@ -278,14 +278,14 @@ function ChallengeSection() {
             <div style={{ background: 'rgba(255,255,255,0.78)', border: `1px solid rgba(0,94,184,0.16)`, borderRadius: '16px', padding: isMobile ? '18px' : '20px 24px', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'auto 1fr auto', alignItems: 'center', gap: '14px', backdropFilter: 'blur(16px)', boxShadow: '0 8px 30px rgba(0,94,184,0.08)', marginBottom: '28px' }}>
               <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(0,94,184,0.1)', color: T.vaselineBlue, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'DM Sans, sans-serif', fontSize: '18px', fontWeight: 700 }}>1</div>
               <div>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: T.vaselineBlue, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: '5px', fontWeight: 700 }}>Daily Raffle Rule</div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: T.vaselineBlue, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: '5px', fontWeight: 700 }}>Daily Giveaway Rule</div>
                 <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: T.body, lineHeight: 1.6 }}>
-                  One completed day equals one raffle right. Tick today after moisturizing to enter the daily draw.
+                  One completed day equals one Giveaway right. Tick today after moisturizing to enter the daily draw.
                 </p>
               </div>
               <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
-                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '34px', color: T.text, lineHeight: 1 }}>{raffleRights}</div>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.muted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{raffleRights === 1 ? 'right earned' : 'rights earned'}</div>
+                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '34px', color: T.text, lineHeight: 1 }}>{giveawayRights}</div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '10px', color: T.muted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{giveawayRights === 1 ? 'right earned' : 'rights earned'}</div>
               </div>
             </div>
 
@@ -302,7 +302,7 @@ function ChallengeSection() {
 
             {count === 0 && (
               <div style={{ textAlign: 'center', padding: '20px', color: T.muted, fontFamily: 'DM Sans, sans-serif', fontSize: '14px' }}>
-                Tap any day above to begin tracking your ritual and earn your first raffle right ↑
+                Tap any day above to begin tracking your ritual and earn your first Giveaway right ↑
               </div>
             )}
           </div>
@@ -366,7 +366,7 @@ function ChallengeSection() {
               <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(28px,3vw,40px)', fontWeight: 300, color: T.text, lineHeight: 1.1 }}>Build the habit in three clear phases.</h3>
             </div>
             <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: T.body, lineHeight: 1.65, maxWidth: '360px' }}>
-              The plan keeps the action simple: moisturize, tick the day, collect the raffle right, repeat.
+              The plan keeps the action simple: moisturize, tick the day, collect the Giveaway right, repeat.
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '12px' }}>
@@ -498,14 +498,14 @@ function CTASection() {
     <section id="cta-section" style={{ background: `${iridOrbs}, ${T.bg}`, padding: 'clamp(100px,12vw,160px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
       <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)`, backgroundSize: '28px 28px', pointerEvents: 'none', opacity: 0.6 }}></div>
       <div ref={ref} style={{ maxWidth: '780px', margin: '0 auto', position: 'relative', opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(40px)', transition: 'all 0.9s ease' }}>
-        <RaffleCountdown align="center" compact={isMobile} style={{ marginBottom: '28px' }} />
-        <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(13px,1.5vw,15px)', fontStyle: 'italic', color: T.lavender, letterSpacing: '0.04em', marginBottom: '24px' }}>21 days. 21 raffle chances. 1 movement.</div>
+        <GiveawayCountdown align="center" compact={isMobile} style={{ marginBottom: '28px' }} />
+        <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(13px,1.5vw,15px)', fontStyle: 'italic', color: T.lavender, letterSpacing: '0.04em', marginBottom: '24px' }}>21 days. 21 Giveaway chances. 1 movement.</div>
         <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(44px,6vw,80px)', fontWeight: 300, color: T.text, lineHeight: 1.05, marginBottom: '28px', letterSpacing: '-0.015em' }}>
           Your glow is<br/>
           <em style={{ fontStyle: 'italic', background: `linear-gradient(120deg, ${T.lavender}, ${T.blue}, ${T.mint})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>21 days away.</em>
         </h2>
         <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '17px', color: T.body, lineHeight: 1.7, maxWidth: '520px', margin: '0 auto 48px' }}>
-          Start today. One pump, once a day, for three weeks. Tick each completed day to collect your raffle right and keep your body-care habit glowing.
+          Start today. One pump, once a day, for three weeks. Tick each completed day to collect your Giveaway right and keep your body-care habit glowing.
         </p>
         <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '56px' }}>
           <button
@@ -535,3 +535,4 @@ function CTASection() {
 }
 
 Object.assign(window, { ChallengeSection, HowToSection, SocialSection, CTASection });
+

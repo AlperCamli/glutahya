@@ -313,3 +313,4 @@ function CombosSection() {
 }
 
 Object.assign(window, { WhyHabitSection, GlowMovementSection, ProductsSection, CombosSection, PRODUCTS });
+
